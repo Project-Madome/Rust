@@ -1,4 +1,5 @@
 use anyhow;
+use bytes::Bytes;
 
 use super::Client;
 
@@ -11,11 +12,12 @@ impl FileClient {
         Self { client }
     }
 
-    pub async fn upload(&self, filepath: &str) -> anyhow::Result<()> {
+    pub async fn upload(&self, url_path: &str, buf: Bytes) -> anyhow::Result<()> {
         let response = self
             .client
-            .post(format!("/v1/{}", filepath).as_str())
+            .post(format!("/v1/{}", url_path).as_str())
             .header("Authorization", self.client.token_manager.token())
+            .body(buf)
             .send().await?;
 
         if response.status().is_success() {
