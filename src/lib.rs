@@ -1,7 +1,9 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+pub mod auth;
+pub mod book;
+pub mod file;
+
+mod client;
+mod token_manager;
+
+pub use client::Client;
+pub use token_manager::TokenManager;
