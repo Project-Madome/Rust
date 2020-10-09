@@ -3,12 +3,12 @@ use bytes::Bytes;
 
 use super::Client;
 
-pub struct FileClient {
-    client: Client,
+pub struct FileClient<'a> {
+    client: &'a Client,
 }
 
-impl FileClient {
-    pub fn new(client: Client) -> Self {
+impl<'a> FileClient<'a> {
+    pub fn new(client: &'a Client) -> Self {
         Self { client }
     }
 

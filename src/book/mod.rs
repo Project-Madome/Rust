@@ -6,12 +6,12 @@ use bytes::Bytes;
 
 use super::Client;
 
-pub struct BookClient {
-    client: Client,
+pub struct BookClient<'a> {
+    client: &'a Client,
 }
 
-impl BookClient {
-    pub fn new(client: Client) -> Self {
+impl<'a> BookClient<'a> {
+    pub fn new(client: &'a Client) -> Self {
         Self { client }
     }
 

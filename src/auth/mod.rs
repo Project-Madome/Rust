@@ -4,12 +4,12 @@ pub use models::{Token, TokenState};
 
 use super::Client;
 
-pub struct AuthClient {
-    client: Client,
+pub struct AuthClient<'a> {
+    client: &'a Client,
 }
 
-impl AuthClient {
-    pub fn new(client: Client) -> Self {
+impl<'a> AuthClient<'a> {
+    pub fn new(client: &'a Client) -> Self {
         Self { client }
     }
 
