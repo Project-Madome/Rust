@@ -7,7 +7,7 @@ use bytes::Bytes;
 use super::Client;
 
 pub struct BookClient<'a> {
-    client: &'a Client,
+    pub client: &'a Client,
 }
 
 impl<'a> BookClient<'a> {

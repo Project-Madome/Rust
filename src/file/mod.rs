@@ -4,7 +4,7 @@ use bytes::Bytes;
 use super::Client;
 
 pub struct FileClient<'a> {
-    client: &'a Client,
+    pub client: &'a Client,
 }
 
 impl<'a> FileClient<'a> {

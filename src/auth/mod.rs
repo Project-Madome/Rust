@@ -5,7 +5,7 @@ pub use models::{Token, TokenState};
 use super::Client;
 
 pub struct AuthClient<'a> {
-    client: &'a Client,
+    pub client: &'a Client,
 }
 
 impl<'a> AuthClient<'a> {

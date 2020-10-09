@@ -1,6 +1,6 @@
 [package]
 name = "madome_client"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Lee Tae Woo <syr@meu.works>"]
 edition = "2018"
 description = "Madome Client"
