@@ -18,13 +18,17 @@ impl FileClient {
             .post(format!("/v1/{}", url_path).as_str())
             .header("Authorization", self.client.token_manager.token())
             .body(buf)
-            .send().await?;
+            .send()
+            .await?;
 
         if response.status().is_success() {
             return Ok(());
-
-        }   else {
-            Err(anyhow::Error::msg(format!("Can't upload {}\n{}", response.status().to_string(), response.text().await?)))
+        } else {
+            Err(anyhow::Error::msg(format!(
+                "Can't upload {}\n{}",
+                response.status().to_string(),
+                response.text().await?
+            )))
         }
     }
 }

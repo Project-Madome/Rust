@@ -1,5 +1,5 @@
 mod models;
-pub use models::Book;
+pub use models::{Book, ContentType, Language, Metadata, MetadataBook};
 
 use anyhow;
 use bytes::Bytes;
