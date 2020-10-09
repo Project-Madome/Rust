@@ -10,10 +10,10 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(base_url: &str) -> Self {
+    pub fn new(base_url: &str, token_manager: TokenManager) -> Self {
         Self {
             base_url: base_url.to_string(),
-            token_manager: TokenManager::new(),
+            token_manager,
             request: reqwest::Client::builder().build().unwrap(),
         }
     }

@@ -13,7 +13,7 @@ impl TokenManager {
     }
 
     pub fn refresh(&mut self, token: String) -> anyhow::Result<()> {
-        fs::write(self.path, &token)?;
+        fs::write(&self.path, &token)?;
         self.token = token;
         Ok(())
     }
