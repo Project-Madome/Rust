@@ -5,6 +5,7 @@ authors = ["Lee Tae Woo <syr@meu.works>"]
 edition = "2018"
 description = "Madome Client"
 repository = "https://github.com/Project-Madome/Rust"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
