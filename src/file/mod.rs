@@ -56,11 +56,8 @@ impl FileClient {
             )
             // .header("Content-Length", formdata_buf.len())
             .body(formdata_buf);
-        println!("{:?}", request);
 
         let response = request.send().await?;
-
-        println!("{:?}", response);
 
         match response.error_for_status_ref() {
             Ok(_) => Ok(()),

@@ -47,10 +47,7 @@ impl AuthClient {
             .header("Content-Type", "application/json")
             .body("{\"type\": \"refresh\"}");
 
-        println!("{:?}", request);
-
         let response = request.send().await?;
-        println!("{:?}", &response);
 
         match response.error_for_status_ref() {
             Ok(_) => {
