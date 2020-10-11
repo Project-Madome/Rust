@@ -1,6 +1,6 @@
 #[derive(Debug, PartialEq, Eq)]
 pub enum Metadata {
-    ID(Option<i32>),
+    ID(Option<u32>),
     Title(Option<String>),
     Artists(Option<Vec<String>>),
     Series(Option<Vec<String>>),
@@ -12,6 +12,7 @@ pub enum Metadata {
     CreatedAt(Option<String>),
     ContentURL(Option<String>),
     ThumbnailURL(Option<String>),
+    Page(Option<usize>),
 }
 
 impl<'a> Metadata {
@@ -35,15 +36,26 @@ impl<'a> Into<&'a str> for &Metadata {
             Metadata::CreatedAt(_) => "CreatedAt",
             Metadata::ContentURL(_) => "ContentURL",
             Metadata::ThumbnailURL(_) => "ThumbnailURL",
+            Metadata::Page(_) => "Page",
         }
     }
 }
 
-impl Into<i32> for Metadata {
-    fn into(self) -> i32 {
+impl Into<u32> for Metadata {
+    fn into(self) -> u32 {
         match self {
             Metadata::ID(Some(id)) => id,
-            _ => panic!("Failed Metadata into() -> i32, {:?}", self),
+            _ => panic!("Failed Metadata into() -> u32, {:?}", self),
+        }
+    }
+}
+
+impl Into<usize> for Metadata {
+    fn into(self) -> usize {
+        match self {
+            Metadata::Page(Some(page)) => page,
+            Metadata::Page(None) => 0,
+            _ => panic!("Failed Metadata into() -> usize, {:?}", self),
         }
     }
 }
