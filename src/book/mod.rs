@@ -4,56 +4,73 @@ pub use models::{Book, ContentType, Language, Metadata, MetadataBook};
 use anyhow;
 use bytes::Bytes;
 
-use super::Client;
+use super::{response_error, Client};
 
-pub struct BookClient<'a> {
-    pub client: &'a Client,
+pub struct BookClient {
+    client: Client,
 }
 
-impl<'a> BookClient<'a> {
-    pub fn new(client: &'a Client) -> Self {
-        Self { client }
+impl BookClient {
+    pub fn new(base_url: &str) -> Self {
+        Self {
+            client: Client::new(base_url),
+        }
     }
 
-    pub async fn create_book(&self, book: Book) -> anyhow::Result<()> {
+    pub async fn create_book(&self, token: &String, book: Book) -> anyhow::Result<()> {
         let book = serde_json::to_string(&book).unwrap();
 
         let response = self
             .client
             .post("/v1/book")
-            .header("Authorization", self.client.token_manager.token())
+            .header("Authorization", token)
+            .header("Content-Type", "application/json")
             .body(Bytes::from(book))
             .send()
             .await?;
 
-        if response.status().is_success() {
-            return Ok(());
-        } else {
-            Err(anyhow::Error::msg(format!(
-                "Can't create book {}\n{}",
-                response.status().to_string(),
-                response.text().await?
-            )))
+        match response.error_for_status_ref() {
+            Ok(_) => Ok(()),
+            Err(err) => Err(response_error(
+                err,
+                "POST",
+                "/v1/book",
+                response.text().await?,
+            )),
         }
     }
 
-    pub async fn get_image_list(&self, book_id: u32) -> anyhow::Result<Vec<String>> {
+    pub async fn get_image_list(
+        &self,
+        token: &String,
+        book_id: u32,
+    ) -> anyhow::Result<Vec<String>> {
+        let url = format!("/v1/book/{}/image/list", book_id);
+
         let response = self
             .client
-            .get(format!("/v1/book/{}/image/list", book_id).as_str())
-            .header("Authorization", self.client.token_manager.token())
+            .get(url.as_str())
+            .header("Authorization", token)
             .send()
             .await?;
 
-        if response.status().is_success() {
-            let image_list = response.json::<Vec<String>>().await?;
-            return Ok(image_list);
-        } else {
-            Err(anyhow::Error::msg(format!(
-                "Can't get image list {}\n{}",
-                response.status().to_string(),
-                response.text().await?
-            )))
+        match response.error_for_status_ref() {
+            Ok(_) => {
+                let image_list = response.json::<Vec<String>>().await?;
+                Ok(image_list)
+            }
+            Err(err) => Err(response_error(
+                err,
+                "GET",
+                url.as_str(),
+                response.text().await?,
+            )),
         }
+
+        /* Err(anyhow::Error::msg(format!(
+            "Can't get image list {}\n{}",
+            response.status().to_string(),
+            response.text().await?
+        ))) */
     }
 }
