@@ -1,4 +1,5 @@
-use std::convert::Into;
+use std::convert::From;
+use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 
@@ -6,7 +7,7 @@ use super::{ContentType, Language, Metadata};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Book {
-    pub id: i32,
+    pub id: u32,
     pub title: String,
     pub groups: Vec<String>,
     pub artists: Vec<String>,
@@ -14,8 +15,10 @@ pub struct Book {
     pub tags: Vec<String>,
     pub characters: Vec<String>,
     pub language: String,
+    #[serde(rename(serialize = "type"))]
     pub content_type: String,
     pub created_at: String,
+    pub page_count: usize,
 }
 
 #[derive(Debug, PartialEq)]
@@ -31,6 +34,7 @@ pub struct MetadataBook {
     pub content_type: Metadata,
     pub created_at: Metadata,
     pub thumbnail_url: Metadata,
+    pub page_count: Metadata,
 }
 
 impl From<MetadataBook> for Book {
@@ -49,6 +53,27 @@ impl From<MetadataBook> for Book {
             language: language.into(),
             content_type: content_type.into(),
             created_at: metadata_book.created_at.into(),
+            page_count: metadata_book.page_count.into(),
+        }
+    }
+}
+
+impl From<Arc<Book>> for Book {
+    fn from(arc_book: Arc<Book>) -> Self {
+        let arc_book = Arc::try_unwrap(arc_book).unwrap();
+
+        Self {
+            id: arc_book.id,
+            title: arc_book.title,
+            groups: arc_book.groups,
+            artists: arc_book.artists,
+            series: arc_book.series,
+            tags: arc_book.tags,
+            characters: arc_book.characters,
+            language: arc_book.language,
+            content_type: arc_book.content_type,
+            created_at: arc_book.created_at,
+            page_count: arc_book.page_count,
         }
     }
 }
