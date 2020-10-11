@@ -1,4 +1,7 @@
+use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
+
 mod models;
+
 pub use models::{Book, ContentType, Language, Metadata, MetadataBook};
 
 use anyhow;
@@ -23,8 +26,8 @@ impl BookClient {
         let response = self
             .client
             .post("/v1/book")
-            .header("Authorization", token)
-            .header("Content-Type", "application/json")
+            .header(AUTHORIZATION, token)
+            .header(CONTENT_TYPE, "application/json")
             .body(Bytes::from(book))
             .send()
             .await?;
@@ -50,7 +53,7 @@ impl BookClient {
         let response = self
             .client
             .get(url.as_str())
-            .header("Authorization", token)
+            .header(AUTHORIZATION, token)
             .send()
             .await?;
 

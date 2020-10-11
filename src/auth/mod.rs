@@ -1,3 +1,5 @@
+use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
+
 mod models;
 
 pub use models::{Token, TokenState};
@@ -19,7 +21,7 @@ impl AuthClient {
         let response = self
             .client
             .get("/v1/auth/token")
-            .header("Authorization", token)
+            .header(AUTHORIZATION, token)
             .send()
             .await?;
 
@@ -43,8 +45,8 @@ impl AuthClient {
         let request = self
             .client
             .post("/v1/auth/token")
-            .header("Authorization", token)
-            .header("Content-Type", "application/json")
+            .header(AUTHORIZATION, token)
+            .header(CONTENT_TYPE, "application/json")
             .body("{\"type\": \"refresh\"}");
 
         let response = request.send().await?;

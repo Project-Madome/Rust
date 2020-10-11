@@ -2,6 +2,7 @@ use std::io::Write;
 
 use anyhow;
 use bytes::Bytes;
+use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 
 use super::{response_error, Client};
 
@@ -49,9 +50,9 @@ impl FileClient {
         let request = self
             .client
             .post(url.as_str())
-            .header("Authorization", token)
+            .header(AUTHORIZATION, token)
             .header(
-                "Content-Type",
+                CONTENT_TYPE,
                 format!("multipart/form-data; boundary={}", BOUNDARY),
             )
             // .header("Content-Length", formdata_buf.len())
