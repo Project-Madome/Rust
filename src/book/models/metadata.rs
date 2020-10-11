@@ -200,15 +200,12 @@ pub enum ContentType {
     Manga,
     Doujinshi,
     ArtistCG,
+    GameCG,
 }
 
 impl Into<String> for ContentType {
     fn into(self) -> String {
-        match self {
-            Self::Manga => "manga".to_string(),
-            Self::ArtistCG => "artist cg".to_string(),
-            Self::Doujinshi => "doujinshi".to_string(),
-        }
+        self.to_string()
     }
 }
 
@@ -218,16 +215,18 @@ impl ToString for ContentType {
             Self::Manga => "manga".to_string(),
             Self::ArtistCG => "artist cg".to_string(),
             Self::Doujinshi => "doujinshi".to_string(),
+            Self::GameCG => "game cg".to_string()
         }
     }
 }
 
-impl ContentType {
-    pub fn from(s: String) -> ContentType {
+impl From<String> for ContentType {
+    fn from(s: String) -> ContentType {
         match s.as_str() {
             "manga" => ContentType::Manga,
             "doujinshi" => ContentType::Doujinshi,
             "artist CG" => ContentType::ArtistCG,
+            "game CG" => ContentType::GameCG,
             unknown => panic!("Unknown ContentType {}", unknown),
         }
     }
