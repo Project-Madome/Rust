@@ -58,16 +58,11 @@ impl FileClient {
             // .header("Content-Length", formdata_buf.len())
             .body(formdata_buf);
 
-        let response = request.send().await?;
+        let response = request.send()?;
 
         match response.error_for_status_ref() {
             Ok(_) => Ok(()),
-            Err(err) => Err(response_error(
-                err,
-                "POST",
-                url.as_str(),
-                response.text().await?,
-            )),
+            Err(err) => Err(response_error(err, "POST", url.as_str(), response.text()?)),
         }
     }
 }

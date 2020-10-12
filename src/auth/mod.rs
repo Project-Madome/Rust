@@ -23,11 +23,11 @@ impl AuthClient {
             .get("/v1/auth/token")
             .header(AUTHORIZATION, token)
             .send()
-            .await?;
+            ?;
 
         match response.error_for_status_ref() {
             Ok(_) => {
-                /* let TokenState { enable } = response.json::<TokenState>().await?;
+                /* let TokenState { enable } = response.json::<TokenState>()?;
 
                 Ok(enable) */
                 Ok(())
@@ -36,7 +36,7 @@ impl AuthClient {
                 err,
                 "POST",
                 "/v1/auth/token",
-                response.text().await?,
+                response.text()?,
             )),
         }
     }
@@ -49,11 +49,11 @@ impl AuthClient {
             .header(CONTENT_TYPE, "application/json")
             .body("{\"type\": \"refresh\"}");
 
-        let response = request.send().await?;
+        let response = request.send()?;
 
         match response.error_for_status_ref() {
             Ok(_) => {
-                let Token { token: new_token } = response.json().await?;
+                let Token { token: new_token } = response.json()?;
 
                 Ok(new_token)
             }
@@ -61,7 +61,7 @@ impl AuthClient {
                 err,
                 "POST",
                 "/v1/auth/token",
-                response.text().await?,
+                response.text()?,
             )),
         }
     }

@@ -28,18 +28,16 @@ impl BookClient {
             .post("/v1/book")
             .header(AUTHORIZATION, token)
             .header(CONTENT_TYPE, "application/json")
-            .body(Bytes::from(book))
-            .send()
-            .await?;
+            .body(
+                Bytes::from(book)
+                    .into_iter()
+                    .collect::<Vec<_>>(),
+            )
+            .send()?;
 
         match response.error_for_status_ref() {
             Ok(_) => Ok(()),
-            Err(err) => Err(response_error(
-                err,
-                "POST",
-                "/v1/book",
-                response.text().await?,
-            )),
+            Err(err) => Err(response_error(err, "POST", "/v1/book", response.text()?)),
         }
     }
 
@@ -54,26 +52,20 @@ impl BookClient {
             .client
             .get(url.as_str())
             .header(AUTHORIZATION, token)
-            .send()
-            .await?;
+            .send()?;
 
         match response.error_for_status_ref() {
             Ok(_) => {
-                let image_list = response.json::<Vec<String>>().await?;
+                let image_list = response.json::<Vec<String>>()?;
                 Ok(image_list)
             }
-            Err(err) => Err(response_error(
-                err,
-                "GET",
-                url.as_str(),
-                response.text().await?,
-            )),
+            Err(err) => Err(response_error(err, "GET", url.as_str(), response.text()?)),
         }
 
         /* Err(anyhow::Error::msg(format!(
             "Can't get image list {}\n{}",
             response.status().to_string(),
-            response.text().await?
+            response.text()?
         ))) */
     }
 }

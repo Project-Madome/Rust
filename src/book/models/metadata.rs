@@ -215,7 +215,7 @@ impl ToString for ContentType {
             Self::Manga => "manga".to_string(),
             Self::ArtistCG => "artist cg".to_string(),
             Self::Doujinshi => "doujinshi".to_string(),
-            Self::GameCG => "game cg".to_string()
+            Self::GameCG => "game cg".to_string(),
         }
     }
 }
