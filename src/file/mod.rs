@@ -1,14 +1,14 @@
 use std::io::Write;
+use std::path::Path;
 
 use anyhow;
-use bytes::Bytes;
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 
 use super::{response_error, Client};
 
 static BOUNDARY: &'static str = "----MadomeBoundary583r2ae3h3w3hs470e";
 
-fn formdata(buf: Bytes, content_type: String) -> std::io::Result<Vec<u8>> {
+fn formdata<Buf: AsRef<[u8]>>(buf: Buf, content_type: String) -> std::io::Result<Vec<u8>> {
     let mut data = vec![];
 
     write!(data, "--{}\r\n", BOUNDARY)?;
@@ -19,7 +19,10 @@ fn formdata(buf: Bytes, content_type: String) -> std::io::Result<Vec<u8>> {
     write!(data, "Content-Type: {}\r\n", content_type)?;
     write!(data, "\r\n")?;
 
-    let mut data = data.into_iter().chain(buf.into_iter()).collect::<Vec<_>>();
+    let mut data = data
+        .into_iter()
+        .chain(buf.as_ref().into_iter().map(|b| *b))
+        .collect::<Vec<_>>();
 
     write!(data, "\r\n")?;
     write!(data, "--{}--\r\n", BOUNDARY)?;
@@ -40,7 +43,22 @@ impl FileClient {
 
     /// ## Aurguments
     /// - url_path: don't add slash to front
-    pub async fn upload(&self, token: &String, url_path: &str, buf: Bytes) -> anyhow::Result<()> {
+    /// ## example
+    /// ```rust
+    /// use madome_client::FileClient;
+    ///
+    /// let token = String::from("");
+    /// let file_client = FileClient::new("https:://abcd.bcda");
+    /// let buf = std::fs::read("./.temp/1234/0.jpg").unwrap();
+    /// file_client.upload(&token, "image/library/1234/0.jpg", buf);
+    /// ```
+    pub fn upload<P: AsRef<Path>, Buf: AsRef<[u8]>>(
+        &self,
+        token: &String,
+        url_path: P,
+        buf: Buf,
+    ) -> anyhow::Result<()> {
+        let url_path = url_path.as_ref().to_str().unwrap();
         let url = format!("/v1/{}", url_path);
 
         // let buf_len = buf.len();
