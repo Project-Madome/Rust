@@ -20,7 +20,7 @@ impl BookClient {
         }
     }
 
-    pub async fn create_book(&self, token: &String, book: Book) -> anyhow::Result<()> {
+    pub fn create_book(&self, token: &String, book: Book) -> anyhow::Result<()> {
         let book = serde_json::to_string(&book).unwrap();
 
         let response = self
@@ -28,11 +28,7 @@ impl BookClient {
             .post("/v1/book")
             .header(AUTHORIZATION, token)
             .header(CONTENT_TYPE, "application/json")
-            .body(
-                Bytes::from(book)
-                    .into_iter()
-                    .collect::<Vec<_>>(),
-            )
+            .body(Bytes::from(book).into_iter().collect::<Vec<_>>())
             .send()?;
 
         match response.error_for_status_ref() {
@@ -41,11 +37,7 @@ impl BookClient {
         }
     }
 
-    pub async fn get_image_list(
-        &self,
-        token: &String,
-        book_id: u32,
-    ) -> anyhow::Result<Vec<String>> {
+    pub fn get_image_list(&self, token: &String, book_id: u32) -> anyhow::Result<Vec<String>> {
         let url = format!("/v1/book/{}/image/list", book_id);
 
         let response = self

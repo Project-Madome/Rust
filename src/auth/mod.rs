@@ -17,13 +17,12 @@ impl AuthClient {
         }
     }
 
-    pub async fn valid_token(&self, token: &String) -> anyhow::Result<()> {
+    pub fn valid_token(&self, token: &String) -> anyhow::Result<()> {
         let response = self
             .client
             .get("/v1/auth/token")
             .header(AUTHORIZATION, token)
-            .send()
-            ?;
+            .send()?;
 
         match response.error_for_status_ref() {
             Ok(_) => {
@@ -41,7 +40,7 @@ impl AuthClient {
         }
     }
 
-    pub async fn refresh_token(&self, token: &String) -> anyhow::Result<String> {
+    pub fn refresh_token(&self, token: &String) -> anyhow::Result<String> {
         let request = self
             .client
             .post("/v1/auth/token")
