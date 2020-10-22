@@ -20,7 +20,7 @@ impl BookClient {
         }
     }
 
-    pub fn create_book(&self, token: &String, book: Book) -> anyhow::Result<()> {
+    pub fn create_book(&self, token: &String, book: &Book) -> anyhow::Result<()> {
         let book = serde_json::to_string(&book).unwrap();
 
         let response = self
