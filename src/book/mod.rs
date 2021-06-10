@@ -37,6 +37,17 @@ impl BookClient {
         }
     }
 
+    pub fn get_book_by_id(&self, token: &String, book_id: i32) -> anyhow::Result<()> {
+        let url = format!("/v1/books/{}", book_id);
+
+        let response = self.client.get(&url).header(AUTHORIZATION, token).send()?;
+
+        match response.error_for_status_ref() {
+            Ok(_) => Ok(()),
+            Err(err) => Err(response_error(err, "GET", "/v1/book", response.text()?)),
+        }
+    }
+
     pub fn get_image_list(&self, token: &String, book_id: u32) -> anyhow::Result<Vec<String>> {
         let url = format!("/v1/book/{}/image/list", book_id);
 
