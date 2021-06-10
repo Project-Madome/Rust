@@ -38,13 +38,20 @@ impl BookClient {
     }
 
     pub fn get_book_by_id(&self, token: &String, book_id: i32) -> anyhow::Result<()> {
-        let url = format!("/v1/books/{}", book_id);
+        let url = format!("/v1/books");
 
-        let response = self.client.get(&url).header(AUTHORIZATION, token).send()?;
+        let id = book_id.to_string();
+
+        let response = self
+            .client
+            .get(&url)
+            .query(&[("type", "id"), ("value", &id)])
+            .header(AUTHORIZATION, token)
+            .send()?;
 
         match response.error_for_status_ref() {
             Ok(_) => Ok(()),
-            Err(err) => Err(response_error(err, "GET", "/v1/book", response.text()?)),
+            Err(err) => Err(response_error(err, "GET", "/v1/books", response.text()?)),
         }
     }
 
